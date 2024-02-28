@@ -130,6 +130,20 @@ export const fetchResource = async (prop) => {
     return error;
   }
 };
+export const fetchUserResources = async (prop) => {
+  const { id, token } = prop;
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const { data } = await axios.get(`${apiUrl}/resources/user/${id}`, config);
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
 export const fetchTransactions = async (prop) => {
   const { page, limit, token } = prop;
   try {

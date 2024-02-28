@@ -6,7 +6,7 @@ const Card = ({ data }) => {
   return (
     <div className="rounded-sm border border-stroke bg-white py-2 px-3 shadow-default dark:border-strokedark dark:bg-boxdark">
       <div>
-        <Link to={`/resources/${data?._id}`} className="size-[200px]">
+        <Link to={`/resources/${data?._id}`} className="size-[250px]">
           {data?.category === 'image' ? (
             <img
               src={data?.file?.url}

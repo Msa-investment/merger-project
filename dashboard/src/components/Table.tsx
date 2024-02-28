@@ -36,7 +36,11 @@ const Table = ({ data, header, handleEdit, handleDelete }) => {
                 <tr key={idx} className="content-center">
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark capitalize flex items-center gap-2">
                     <div className="flex-shrink-0">
-                      <img src={row?.avatar?.url || BrandOne} alt="Brand" />
+                      <img
+                        src={row?.avatar?.url || BrandOne}
+                        alt="Brand"
+                        className="w-[60px] h-[60px] rounded-full"
+                      />
                     </div>
                     <span>
                       {row?.firstName} {}

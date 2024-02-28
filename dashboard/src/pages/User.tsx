@@ -6,7 +6,7 @@ import getError from '../hooks/getError';
 import AuthContext from '../context/authContext';
 import { fetchUser } from '../hooks/axiosApis';
 import { useParams, useNavigate } from 'react-router-dom';
-import Card from '../components/CardRescource';
+import Card from '../components/CardTable';
 import Swal from 'sweetalert2';
 const apiUrl = import.meta.env.VITE_API_URL;
 import axios from 'axios';
@@ -25,7 +25,7 @@ const User = () => {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
+      console.log(data?.resources);
     }
     if (error || isError) {
       const message = getError(error);
@@ -49,8 +49,8 @@ const User = () => {
       return false;
     }
   };
-  const handelEdit = () => {
-    navigate('/users');
+  const handelEdit = (id: string) => {
+    navigate(`/users/${id}`);
   };
   const handelDelete = () => {
     Swal.fire({
@@ -65,7 +65,7 @@ const User = () => {
       if (result.isConfirmed) {
         setLoading(true);
         axios
-          .delete(`${apiUrl}/admin/users/${id}`, config)
+          .delete(`${apiUrl}/admins/users/${id}`, config)
           .then((res) => {
             if (res.data) {
               console.log(res.data);
@@ -75,7 +75,7 @@ const User = () => {
                 icon: 'success',
                 text: 'User deleted successfully!',
               });
-              navigate('/user');
+              navigate('/users');
             }
           })
           .catch((error) => {
@@ -102,8 +102,8 @@ const User = () => {
         </h2>
         {haveAccess() && (
           <div className="flex gap-2 text-center">
-            <EditTooltip handelEdit={handelEdit} />
-            <DeleteToolTip handleDelete={handelDelete} />
+            <EditTooltip data={id} handleEdit={handelEdit} />
+            <DeleteToolTip data={id} handleDelete={handelDelete} />
           </div>
         )}
       </div>

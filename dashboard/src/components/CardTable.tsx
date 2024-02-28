@@ -1,9 +1,9 @@
 import Card from './Card';
-const CardTable = ({ data }) => {
+const CardTable = ({ data }: any) => {
   return (
     <>
-      {data?.data?.length > 0 &&
-        data?.data?.map((item) => <Card key={item._id} data={item} />)}
+      {data?.length > 0 &&
+        data?.map((item: any) => <Card key={item._id} data={item} />)}
     </>
   );
 };

@@ -33,7 +33,7 @@ const Pagination = ({ data, setPage, page }) => {
           </li>
         )}
         <li aria-current="page">
-          <button className="relative block rounded bg-blue-100 px-3 py-1.5 text-sm font-medium text-blue-700 transition-all duration-300">
+          <button className="relative block rounded bg-primary px-3 py-1.5 text-sm font-medium text-blue-700 transition-all duration-300">
             {page}
             <span className="absolute -m-px h-px w-px overflow-hidden whitespace-nowrap border-0 p-0 [clip:rect(0,0,0,0)]">
               (current)

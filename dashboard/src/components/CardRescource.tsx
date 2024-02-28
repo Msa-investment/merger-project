@@ -25,7 +25,7 @@ const Card = ({ data }) => {
   console.log(data);
   return (
     <div className="rounded-sm border border-stroke bg-white py-2 px-3 shadow-default dark:border-strokedark dark:bg-boxdark">
-      <div className="size-[200px]">
+      <div className="size-[400px]">
         {data?.category === 'image' ? (
           <img
             src={data?.file?.url}
