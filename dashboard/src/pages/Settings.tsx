@@ -7,6 +7,7 @@ import axios from 'axios';
 import getError from '../hooks/getError';
 import AuthContext from '../context/authContext';
 const apiUrl = import.meta.env.VITE_API_URL;
+import Swal from 'sweetalert2';
 import { useQueryClient } from '@tanstack/react-query';
 import userThree from '../images/user/user-03.png';
 import { FiEye, FiEyeOff } from 'react-icons/fi';

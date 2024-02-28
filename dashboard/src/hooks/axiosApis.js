@@ -1,21 +1,11 @@
 import axios from 'axios';
 
 const apiUrl = import.meta.env.VITE_API_URL;
-
-export const fetchSite = async () => {
-  try {
-    const { data } = await axios.get(`${apiUrl}/general`);
-    return data;
-  } catch (error) {
-    console.log(error.message);
-    return error;
-  }
-};
 export const fetchDashboard = async (user) => {
   try {
     const config = {
       headers: {
-        Authorization: `Bearer ${user?.token}`,
+        Authorization: `Bearer ${user?.token || user?.accessToken}`,
       },
     };
     const { data } = await axios.get(`${apiUrl}/general/dashboard`, config);
@@ -29,10 +19,10 @@ export const fetchAdmins = async (user) => {
   try {
     const config = {
       headers: {
-        Authorization: `Bearer ${user?.token}`,
+        Authorization: `Bearer ${user?.token || user?.accessToken}`,
       },
     };
-    const { data } = await axios.get(`${apiUrl}/admin`, config);
+    const { data } = await axios.get(`${apiUrl}/admins`, config);
     return data;
   } catch (error) {
     console.log(error.message);
@@ -46,7 +36,10 @@ export const fetchUser = async (prop) => {
         Authorization: `Bearer ${prop?.token}`,
       },
     };
-    const { data } = await axios.get(`${apiUrl}/admin/users/${prop.id}`, config);
+    const { data } = await axios.get(
+      `${apiUrl}/admins/users/${prop.id}`,
+      config,
+    );
     return data;
   } catch (error) {
     console.log(error.message);

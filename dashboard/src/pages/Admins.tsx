@@ -2,7 +2,7 @@ import Breadcrumb from '../components/Breadcrumb.tsx';
 import Table from '../components/Table.tsx';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Loader from '../components/Loader';
-import { fetchUsers } from '../hooks/axiosApis';
+import { fetchAdmins } from '../hooks/axiosApis';
 import getError from '../hooks/getError';
 import AuthContext from '../context/authContext';
 import { useContext, useEffect, useState } from 'react';
@@ -15,8 +15,8 @@ const Users = () => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const { data, isLoading, error } = useQuery({
-    queryKey: ['users'],
-    queryFn: async () => fetchUsers(user),
+    queryKey: ['admins'],
+    queryFn: async () => fetchAdmins(user),
   });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -50,11 +50,11 @@ const Users = () => {
       if (result.isConfirmed) {
         setLoading(true);
         axios
-          .delete(`${apiUrl}/admin/users/${id}`, config)
+          .delete(`${apiUrl}/admins/users/${id}`, config)
           .then((res) => {
             if (res.data) {
               console.log(res.data);
-              queryClient.invalidateQueries(['users']);
+              queryClient.invalidateQueries(['admins', 'users']);
               Swal.fire({
                 title: 'User deleted',
                 icon: 'success',
@@ -79,11 +79,11 @@ const Users = () => {
   };
   return (
     <>
-      <Breadcrumb pageName="Users" />
+      <Breadcrumb pageName="Admins" />
       <div className="flex flex-col gap-10">
         <Table
-          data={data?.data?.data}
-          header="Users"
+          data={data}
+          header='Admins'
           handleDelete={handleDelete}
           handleEdit={handleEdit}
         />

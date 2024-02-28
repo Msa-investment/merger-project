@@ -9,7 +9,7 @@ import ChatCard from '../../components/ChatCard.tsx';
 import TableOne from '../../components/UserTable.tsx';
 import { useQuery } from '@tanstack/react-query';
 import Loader from '../../components/Loader';
-import { fetchUsers } from '../../hooks/axiosApis';
+import { fetchDashboard } from '../../hooks/axiosApis';
 import getError from '../../hooks/getError';
 import AuthContext from '../../context/authContext';
 import { useContext, useEffect } from 'react';
@@ -17,8 +17,8 @@ import { useContext, useEffect } from 'react';
 const ECommerce = () => {
   const { user } = useContext(AuthContext);
   const { data, isLoading, error } = useQuery({
-    queryKey: ['users'],
-    queryFn: async () => fetchUsers(user),
+    queryKey: ['dashboard'],
+    queryFn: async () => fetchDashboard(user),
   });
   useEffect(() => {
     if (data) {
@@ -32,10 +32,10 @@ const ECommerce = () => {
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardOne data={data} />
-        <CardTwo data={data} />
-        <CardThree data={data} />
-        <CardFour data={data} />
+        <CardThree data={data?.totalResources} />
+        <CardTwo data={data?.totalAdmins} />
+        <CardOne data={data?.totalCustomers} />
+        <CardFour data={data?.totalUsers} />
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
@@ -43,11 +43,11 @@ const ECommerce = () => {
         <ChartTwo data={data} />
         <ChartThree data={data} />
         <div className="col-span-12 xl:col-span-6">
-          <ChatCard data={data}  />
+          <ChatCard data={data} />
         </div>
         {/* <MapOne /> */}
         <div className="col-span-12">
-          <TableOne data={data?.data} />
+          <TableOne data={data?.topCustomers} />
         </div>
       </div>
       {isLoading ? <Loader /> : ''}

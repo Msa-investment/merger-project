@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import DocumentViewer from './DocViewer';
 
 const Card = ({ data }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -24,13 +25,15 @@ const Card = ({ data }) => {
   console.log(data);
   return (
     <div className="rounded-sm border border-stroke bg-white py-2 px-3 shadow-default dark:border-strokedark dark:bg-boxdark">
-      <div className="">
+      <div className="size-[200px]">
         {data?.category === 'image' ? (
           <img
             src={data?.file?.url}
             alt="fileImage"
             className="h-full object-contain"
           />
+        ) : data?.category === 'document' ? (
+          <DocumentViewer src={data?.file?.url} />
         ) : (
           <>
             <video

@@ -1,26 +1,30 @@
 import { Link } from 'react-router-dom';
 import thumbnail from '../images/icon/R.png';
+import document from '../images/icon/document-icon.png';
 
 const Card = ({ data }) => {
   return (
     <div className="rounded-sm border border-stroke bg-white py-2 px-3 shadow-default dark:border-strokedark dark:bg-boxdark">
-      <Link to={`/resources/${data?._id}`}>
-        {data?.category === 'image' ? (
-          <img
-            src={data?.file?.url}
-            alt="fileImage"
-            className="h-full object-contain"
-          />
-        ) : (
-          <img
-            src={thumbnail}
-            alt="Video Thumbnail"
-            className="h-full object-contain"
-          />
-        )}
-      </Link>
-
-      <div className="mt-4 flex items-end justify-between">
+      <div>
+        <Link to={`/resources/${data?._id}`} className="size-[200px]">
+          {data?.category === 'image' ? (
+            <img
+              src={data?.file?.url}
+              alt="fileImage"
+              className="h-full object-fit"
+            />
+          ) : data?.category === 'document' ? (
+            <img src={document} alt="document" className="h-full object-fit" />
+          ) : (
+            <img
+              src={thumbnail}
+              alt="Video Thumbnail"
+              className="h-full object-fit"
+            />
+          )}
+        </Link>
+      </div>
+      <div className="my-3 flex items-end justify-between">
         <div>
           <Link
             to={`/resources/${data?._id}`}

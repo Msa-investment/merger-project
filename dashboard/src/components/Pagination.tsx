@@ -1,7 +1,7 @@
 const Pagination = ({ data, setPage, page }) => {
   return (
     <nav
-      className="mt-5 flex items-center justify-between text-sm"
+      className="flex items-center justify-between text-sm"
       aria-label="Page navigation example"
     >
       <p>
