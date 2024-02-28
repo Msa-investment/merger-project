@@ -10,10 +10,10 @@ import AuthContext from '../../context/authContext';
 import { LocalStorage } from '../../hooks/LocalStorage';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import Swal from 'sweetalert2';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const SignIn = () => {
   const { user, setUser } = useContext(AuthContext);
-  const apiUrl = import.meta.env.VITE_API_URL;
   const [loading, setLoading] = useState<boolean>(false);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
