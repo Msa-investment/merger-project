@@ -69,7 +69,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 {/*        <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
               MTEL
             </h3> */}
-        </NavLink>
+        </div>
 
         <button
           ref={trigger}
