@@ -65,11 +65,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       }`}
     >
       {/* <!-- SIDEBAR HEADER --> */}
-      <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
+{/*       <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
 {/*        <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
               MTEL
             </h3> */}
-        </div>
+        </div> */}
 
         <button
           ref={trigger}
