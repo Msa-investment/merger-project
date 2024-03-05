@@ -146,12 +146,23 @@ export const updateActivityStatus = async (req, res) => {
 export const updateProject = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const project = await Project.findByIdAndUpdate(
+		const userId = req.user._id;
+		const project = await Project.findById(id);
+		if (
+			!project ||
+			(req.user.role !== 'ADMIN' &&
+				project.userId.toString() !== userId.toString())
+		) {
+			return res
+				.status(403)
+				.json({ message: 'Unauthorized to update project' });
+		}
+		const updatedProject = await Project.findByIdAndUpdate(
 			id,
 			{ ...req.body },
 			{ new: true }
 		);
-		res.status(200).json(project);
+		res.status(200).json({ project: updatedProject });
 	} catch (error) {
 		res.status(404).json({ message: error.message });
 	}
@@ -203,7 +214,7 @@ export const deleteProject = async (req, res) => {
 		) {
 			return res
 				.status(403)
-				.json({ message: 'Unauthorized to delete activity' });
+				.json({ message: 'Unauthorized to delete project' });
 		}
 		await Project.remove();
 		res.status(200).json({ message: 'Project deleted successfully' });

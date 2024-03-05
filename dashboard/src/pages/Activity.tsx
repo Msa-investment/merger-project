@@ -56,7 +56,7 @@ const Activity = () => {
   const handelDelete = () => {
     Swal.fire({
       title: 'Are you sure?',
-      text: `These resourse would be deleted!`,
+      text: `These activity would be deleted!`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -66,17 +66,17 @@ const Activity = () => {
       if (result.isConfirmed) {
         setLoading(true);
         axios
-          .delete(`${apiUrl}/resources/${id}`, config)
+          .delete(`${apiUrl}/projects/${id}/activity/${activityId}`, config)
           .then((res) => {
             if (res.data) {
               console.log(res.data);
-              queryClient.invalidateQueries(['resources']);
+              queryClient.invalidateQueries(['projects', id]);
               Swal.fire({
-                title: 'Resource updated',
+                title: 'Activity updated',
                 icon: 'success',
-                text: 'Resource successfully!',
+                text: 'Activity successfully!',
               });
-              navigate('/resources');
+              navigate(`/project/${id}`);
             }
           })
           .catch((error) => {

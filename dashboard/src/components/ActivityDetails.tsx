@@ -6,11 +6,11 @@ const ActivityDetails = ({ data }) => {
     <>
       <div className="flex flex-col md:flex-row gap-4">
         <div className="">
-          <div className="size-[250px] mx-auto">
+          <div className="size-[250px] md:w-full mx-auto">
             <img
               src={`https://ui-avatars.com/api/?name=${data?.name}`}
               alt="document"
-              className="h-80 w-72 object-cover rounded-t-xl"
+              className="h-60 w-72 md:w-full object-cover rounded-t-xl"
             />
           </div>
           <div className="my-3">

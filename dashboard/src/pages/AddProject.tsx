@@ -19,6 +19,7 @@ const AddResource = () => {
   const { user } = useContext(AuthContext);
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  const [project, setProject] = useState({});
   const info = { token: user?.token || user.accessToken, id };
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ['projects', id],
@@ -26,7 +27,13 @@ const AddResource = () => {
   });
   useEffect(() => {
     if (data) {
+      setProject(() => data.project);
       console.log(data);
+      setName(data?.project?.name);
+      setEndDate(data?.project?.endDate);
+      setStartDate(() => data?.project?.startDate);
+      setDescription(() => data?.project?.description);
+      setType(() => data?.project?.type);
     }
     if (error || isError) {
       const message = getError(error);
@@ -34,15 +41,15 @@ const AddResource = () => {
     }
   }, [data, error, isError]);
 
-  const [title, setTitle] = useState<string>('');
+  const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
-  const [category, setCategory] = useState<string>('image');
+  const [type, setType] = useState<string>('image');
   const handleCategoryChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setCategory(event.target.value);
+    setType(event.target.value);
   };
   const handleDescriptionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
@@ -63,13 +70,14 @@ const AddResource = () => {
     },
   };
   const handleSubmit = async () => {
-    if (!checkForm()) {
+    const formIdGood = checkForm();
+    if (!formIdGood) {
       return toast.error('Check form inputs and try again');
     }
     setLoading(true);
     const data: FormData = {
-      name: title,
-      type: category,
+      name,
+      type,
       startDate,
       endDate,
       description,
@@ -94,22 +102,28 @@ const AddResource = () => {
   };
   const checkForm = () => {
     if (!title.trim()) {
-      return toast.error('Project title is required!');
+      toast.error('Project title is required!');
+      return false;
     }
     if (!startDate) {
-      return toast.error('Project Start date is required!');
+      toast.error('Project Start date is required!');
+      return false;
     }
     if (!endDate) {
-      return toast.error('Project End date is required!');
+      toast.error('Project End date is required!');
+      return false;
     }
     if (new Date(startDate) > new Date(endDate)) {
-      return toast.error('Start date should not be greater than end date!');
+      toast.error('Start date should not be greater than end date!');
+      return false;
     }
     if (!category) {
-      return toast.error('Project category is required!');
+      toast.error('Project category is required!');
+      return false;
     }
     if (!description) {
-      return toast.error('Project description is required!');
+      toast.error('Project description is required!');
+      return false;
     }
     return true;
   };
@@ -138,8 +152,8 @@ const AddResource = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         const data: FormData = {
-          name: title,
-          type: category,
+          name,
+          type,
           startDate,
           endDate,
           description,
@@ -176,7 +190,7 @@ const AddResource = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Add project" />
+      <Breadcrumb pageName={!id ? 'Add project' : 'Edit project'} />
 
       <div className="flex flex-col">
         <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
@@ -196,9 +210,9 @@ const AddResource = () => {
                     </label>
                     <input
                       type="text"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      placeholder="Enter Resource title"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Enter project name"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
                   </div>
@@ -260,7 +274,7 @@ const AddResource = () => {
                   </label>
                   <div className="relative z-20 bg-transparent dark:bg-form-input">
                     <select
-                      value={category}
+                      value={type}
                       onChange={handleCategoryChange}
                       className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     >
