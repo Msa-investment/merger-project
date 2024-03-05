@@ -31,7 +31,7 @@ router.patch('/update-project', requireAuth, updateProject);
 // get update Activity
 router.patch('/update-activity', requireAuth, updateActivity);
 
-router.delete('/', requireAuth, deleteProject);
-router.delete('/activity', requireAuth, deleteActivity);
+router.delete('/:id/activity/:activityId', requireAuth, deleteActivity);
+router.delete('/:id', requireAuth, deleteProject);
 
 export default router;

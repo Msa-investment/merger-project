@@ -91,7 +91,11 @@ const DropdownUser = () => {
 
         <span className="h-12 w-12 rounded-full">
           {user?.user?.avatar?.url ? (
-            <img src={user?.user?.avatar?.url} alt="User" className='h-12 w-12'/>
+            <img
+              src={user?.user?.avatar?.url}
+              alt="User"
+              className="h-12 w-12 rounded-full overflow-hidden"
+            />
           ) : (
             <div className="h-12 w-12 overflow-hidden rounded-full">
               <svg

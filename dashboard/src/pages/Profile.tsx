@@ -57,7 +57,11 @@ const Profile = () => {
           <div className="relative z-30 mx-auto -mt-22 h-30 w-full max-w-30 rounded-full bg-white/20 p-1 backdrop-blur sm:h-44 sm:max-w-44 sm:p-3">
             <div className="relative drop-shadow-2">
               {user.user?.avatar?.url ? (
-                <img src={user.user?.avatar?.url} alt="profile" />
+                <img
+                  src={user.user?.avatar?.url}
+                  alt="profile"
+                  className="rounded-full"
+                />
               ) : (
                 <div className="h-20 w-20 overflow-hidden rounded-full">
                   <svg
@@ -110,8 +114,8 @@ const Profile = () => {
             </div>
           </div>
           <div className="mt-4">
-            <h3 className="mb-1.5 text-2xl font-semibold text-black dark:text-white">
-              {user.user.firstName + user.user.lastName}
+            <h3 className="mb-1.5 text-2xl font-semibold text-black dark:text-white capitalize">
+              {user.user.firstName + ' ' + user.user.lastName}
             </h3>
             <p className="font-medium">{user.user.role}</p>
             <div className="mx-auto mt-4.5 mb-5.5 grid max-w-94 grid-cols-3 rounded-md border border-stroke py-2.5 shadow-1 dark:border-strokedark dark:bg-[#37404F]">

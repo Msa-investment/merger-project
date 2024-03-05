@@ -43,20 +43,20 @@ const Project = () => {
   const haveAccess = () => {
     if (
       user.user.role === 'ADMIN' ||
-      user.user._id.toSttring() === data.userId.toString()
+      user.user._id.toSttring() === data?.project?.userId.toString()
     ) {
       return true;
     } else {
       return false;
     }
   };
-  const handelEdit = () => {
-    navigate('/projects');
+  const handleEdit = () => {
+    navigate(`/projects/${id}/edit-project`);
   };
   const handelDelete = () => {
     Swal.fire({
       title: 'Are you sure?',
-      text: `These resourse would be deleted!`,
+      text: `These project would be deleted!`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -66,17 +66,17 @@ const Project = () => {
       if (result.isConfirmed) {
         setLoading(true);
         axios
-          .delete(`${apiUrl}/resources/${id}`, config)
+          .delete(`${apiUrl}/projects/${id}`, config)
           .then((res) => {
             if (res.data) {
               console.log(res.data);
-              queryClient.invalidateQueries(['resources']);
+              queryClient.invalidateQueries(['projects', id]);
               Swal.fire({
-                title: 'Resource updated',
+                title: 'Project deleted',
                 icon: 'success',
-                text: 'Resource successfully!',
+                text: 'Project deleted successfully!',
               });
-              navigate('/resources');
+              navigate('/projects');
             }
           })
           .catch((error) => {
@@ -100,12 +100,12 @@ const Project = () => {
         <Breadcrumb pageName="Project" />
         {haveAccess() && (
           <div className="flex gap-2 text-center">
-            <EditTooltip handelEdit={handelEdit} />
+            <EditTooltip handleEdit={handleEdit} />
             <DeleteToolTip handleDelete={handelDelete} />
           </div>
         )}
       </div>
-      <ProjectDetails data={data?.project} />      
+      <ProjectDetails data={data?.project} />
       <div className="rounded-sm border border-stroke bg-white px-5 py-4 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:py-2">
         <div className="flex justify-between items-center">
           <h4 className="text-xl font-semibold text-black dark:text-white">

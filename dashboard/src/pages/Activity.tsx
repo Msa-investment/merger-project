@@ -12,7 +12,7 @@ import axios from 'axios';
 import DeleteToolTip from '../components/DeleteToolTip';
 import EditTooltip from '../components/EditTooltip';
 import ProjectDetails from '../components/ProjectDetails';
-import ActivityTable from '../components/ActivityTable';
+import ActivityDetails from '../components/ActivityDetails';
 
 const Activity = () => {
   const { user } = useContext(AuthContext);
@@ -99,7 +99,7 @@ const Activity = () => {
       <div className="flex justify-between my-2 bg-white rounded p-2 px-2 mb-4">
         <Breadcrumb
           parent="Project"
-          link={`/projects/${id}`}
+          link={`projects/${id}`}
           pageName="Activity"
         />
         {haveAccess() && (
@@ -109,13 +109,13 @@ const Activity = () => {
           </div>
         )}
       </div>
-      <ProjectDetails data={data?.project} />
+      <ActivityDetails data={data?.activity} />
 
       <Link
-        to={`/projects/${id}/add-activity`}
+        to={`/projects/${id}/${activityId}/edit-activity`}
         className="capitalize flex items-center gap-2 rounded bg-primary py-2 px-4.5 font-medium text-white hover:bg-opacity-80"
       >
-        Add activity
+        Edit activity
       </Link>
       {isLoading || loading ? <Loader /> : ''}
     </>

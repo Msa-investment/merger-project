@@ -1,13 +1,15 @@
 import Breadcrumb from '../components/Breadcrumb';
 import Loader from '../components/Loader';
 import { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import getError from '../hooks/getError';
+import { fetchProject } from '../hooks/axiosApis';
 import AuthContext from '../context/authContext';
 const apiUrl = import.meta.env.VITE_API_URL;
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
+import Swal from 'sweetalert2';
 
 interface FormData {
   [key: string]: string | Blob;
@@ -15,7 +17,23 @@ interface FormData {
 
 const AddResource = () => {
   const { user } = useContext(AuthContext);
-  const [loading, setLoading] = useState<boolean>(false);
+  const { id } = useParams();
+  const [loading, setLoading] = useState(false);
+  const info = { token: user?.token || user.accessToken, id };
+  const { isLoading, isError, error, data } = useQuery({
+    queryKey: ['projects', id],
+    queryFn: () => fetchProject(info),
+  });
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+    }
+    if (error || isError) {
+      const message = getError(error);
+      console.log(message);
+    }
+  }, [data, error, isError]);
+
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
@@ -45,6 +63,36 @@ const AddResource = () => {
     },
   };
   const handleSubmit = async () => {
+    if (!checkForm()) {
+      return toast.error('Check form inputs and try again');
+    }
+    setLoading(true);
+    const data: FormData = {
+      name: title,
+      type: category,
+      startDate,
+      endDate,
+      description,
+    };
+    axios
+      .post(`${apiUrl}/projects`, data, config)
+      .then((res) => {
+        if (res.data) {
+          toast.success('Project added successfully');
+        }
+        queryClient.invalidateQueries(['projects']);
+        navigate('/projects');
+      })
+      .catch((error) => {
+        console.error(error);
+        const message = getError(error);
+        toast.error(message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+  const checkForm = () => {
     if (!title.trim()) {
       return toast.error('Project title is required!');
     }
@@ -63,31 +111,67 @@ const AddResource = () => {
     if (!description) {
       return toast.error('Project description is required!');
     }
-    const data: FormData = {
-      name: title,
-      type: category,
-      startDate,
-      endDate,
-      description,
-    };
-    setLoading(true);
-    axios
-      .post(`${apiUrl}/projects`, data, config)
-      .then((res) => {
-        if (res.data) {
-          toast.success('Project added successfully');
-        }
-        queryClient.invalidateQueries(['projects']);
-        navigate('/projects');
-      })
-      .catch((error) => {
-        console.error(error);
-        const message = getError(error);
-        toast.error(message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    return true;
+  };
+  const haveAccess = () => {
+    if (
+      user.user.role === 'ADMIN' ||
+      user.user._id.toSttring() === data?.project?.userId.toString()
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const handleEdit = () => {
+    if (!checkForm()) {
+      return toast.error('Check form inputs and try again');
+    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `These project would be updated!`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Delete!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const data: FormData = {
+          name: title,
+          type: category,
+          startDate,
+          endDate,
+          description,
+        };
+        setLoading(true);
+        axios
+          .patch(`${apiUrl}/projects/${id}`, data, config)
+          .then((res) => {
+            if (res.data) {
+              console.log(res.data);
+              queryClient.invalidateQueries(['projects', id]);
+              Swal.fire({
+                title: 'Project updated',
+                icon: 'success',
+                text: 'Project updated successfully!',
+              });
+              navigate('/projects');
+            }
+          })
+          .catch((error) => {
+            const message = getError(error);
+            Swal.fire({
+              title: 'Error',
+              icon: 'error',
+              text: message,
+            });
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+    });
   };
 
   return (
@@ -210,14 +294,23 @@ const AddResource = () => {
             </div>
           </div>
         </div>
-        <button
-          onClick={handleSubmit}
-          className="flex w-full justify-center rounded bg-primary p-3 mt-3 font-medium text-gray"
-        >
-          Add Project
-        </button>
+        {id ? (
+          <button
+            onClick={handleEdit}
+            className="flex w-full justify-center rounded bg-primary p-3 mt-3 font-medium text-gray"
+          >
+            Edit Project
+          </button>
+        ) : (
+          <button
+            onClick={handleSubmit}
+            className="flex w-full justify-center rounded bg-primary p-3 mt-3 font-medium text-gray"
+          >
+            Add Project
+          </button>
+        )}
       </div>
-      {loading ? <Loader /> : ''}
+      {loading || isLoading ? <Loader /> : ''}
     </>
   );
 };

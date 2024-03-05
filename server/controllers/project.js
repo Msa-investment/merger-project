@@ -64,7 +64,7 @@ export const getProject = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const project = await Project.findById(id);
-		const activities = await Activity.find({ porject: id });
+		const activities = await Activity.find({ project: id });
 		res.status(200).json({ project, activities });
 	} catch (error) {
 		res.status(404).json({ message: error.message });
@@ -83,7 +83,13 @@ export const getActivity = async (req, res) => {
 	try {
 		const { id, activityId } = req.params;
 		const activity = await Activity.findById(activityId);
-		const project = await Project.findOne({ id }).populate('userId');
+		const project = await Project.findOne({ id }).populate('userId', [
+			'avatar',
+			'firstName',
+			'lastName',
+			'role',
+			'phone',
+		]);
 		res.status(200).json({ activity, project });
 	} catch (error) {
 		res.status(404).json({ message: error.message });
@@ -152,19 +158,57 @@ export const updateProject = async (req, res) => {
 };
 export const deleteActivity = async (req, res) => {
 	try {
-		const { id } = req.params;
-		const activity = await Activity.findByIdAndDelete(id);
-		res.status(200).json(activity);
+		const { id, activityId } = req.params;
+		const userId = req.user._id;
+
+		// Check if the project exists and the user has permission
+		const project = await Project.findById(id);
+		if (
+			!project ||
+			(req.user.role !== 'ADMIN' &&
+				project.userId.toString() !== userId.toString())
+		) {
+			return res
+				.status(403)
+				.json({ message: 'Unauthorized to delete activity' });
+		}
+
+		// Check if the activity exists
+		const activity = await Activity.findById(activityId);
+		if (!activity) {
+			return res.status(404).json({ message: 'Activity not found' });
+		}
+
+		// Delete the activity
+		await activity.remove();
+
+		// Return success response
+		res.status(200).json({ message: 'Activity deleted successfully' });
 	} catch (error) {
-		res.status(404).json({ message: error.message });
+		// Handle errors
+		res.status(500).json({ message: 'Internal server error' });
 	}
 };
 export const deleteProject = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const project = await Project.findByIdAndDelete(id);
-		res.status(200).json(project);
+		const userId = req.user._id;
+
+		// Check if the project exists and the user has permission
+		const project = await Project.findById(id);
+		if (
+			!project ||
+			(req.user.role !== 'ADMIN' &&
+				project.userId.toString() !== userId.toString())
+		) {
+			return res
+				.status(403)
+				.json({ message: 'Unauthorized to delete activity' });
+		}
+		await Project.remove();
+		res.status(200).json({ message: 'Project deleted successfully' });
 	} catch (error) {
-		res.status(404).json({ message: error.message });
+		console.log(error);
+		res.status(500).json({ message: 'Internal server error' });
 	}
 };

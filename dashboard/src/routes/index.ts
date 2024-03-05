@@ -73,6 +73,11 @@ const coreRoutes = [
     component: Project,
   },
   {
+    path: '/projects/:id/edit-project',
+    title: 'Project',
+    component: AddProject,
+  },
+  {
     path: '/projects/:id/:activityId',
     title: 'Project',
     component: Activity,
@@ -83,7 +88,7 @@ const coreRoutes = [
     component: AddActivity,
   },
   {
-    path: '/projects/:id/edit-activity',
+    path: '/projects/:id/:activityId/edit-activity',
     title: 'Project',
     component: EditActivity,
   },
