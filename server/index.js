@@ -22,6 +22,7 @@ import clientRoutes from './routes/client.js';
 import adminRoutes from './routes/admin.js';
 import serviceRoutes from './routes/service.js';
 import resourceRoutes from './routes/resource.js';
+import projectRoutes from './routes/project.js';
 import errorHandler from './middleware/errorHandler.js';
 
 // setups
@@ -80,6 +81,7 @@ app.use('/api/v1/admins', adminRoutes);
 app.use('/api/v1/client', clientRoutes);
 app.use('/api/v1/resources', resourceRoutes);
 app.use('/api/v1/general', generalRoutes);
+app.use('/api/v1/projects', projectRoutes);
 app.use('/api/v1/services', serviceRoutes);
 // * API DOCS
 // ? Keeping swagger code at the end so that we can load swagger on "/" route
@@ -104,6 +106,6 @@ mongoose
 		useUnifiedTopology: true,
 	})
 	.then(() => {
-		app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+		app.listen(PORT, () => console.log(`Server is listening in port: ${PORT}`));
 	})
 	.catch((error) => console.log(`${error} did not connect`));

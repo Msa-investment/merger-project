@@ -33,7 +33,7 @@ const ECommerce = () => {
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardThree data={data?.totalResources} />
-        <CardTwo data={data?.totalAdmins} />
+        <CardTwo data={data?.totalProjects} />
         <CardOne data={data?.totalCustomers} />
         <CardFour data={data?.totalUsers} />
       </div>

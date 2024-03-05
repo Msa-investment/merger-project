@@ -130,6 +130,54 @@ export const fetchResource = async (prop) => {
     return error;
   }
 };
+export const fetchProjects = async (prop) => {
+  const { page, limit, token } = prop;
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const { data } = await axios.get(
+      `${apiUrl}/projects?page=${page}&limit=${limit}`,
+      config,
+    );
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
+export const fetchProject = async (prop) => {
+  const { id, token } = prop;
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const { data } = await axios.get(`${apiUrl}/projects/${id}`, config);
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
+export const fetchActivity = async (prop) => {
+  const { id, activityId, token } = prop;
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const { data } = await axios.get(
+      `${apiUrl}/projects/${id}/activity/${activityId}`,
+      config,
+    );
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
 export const fetchUserResources = async (prop) => {
   const { id, token } = prop;
   try {

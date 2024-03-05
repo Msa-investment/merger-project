@@ -74,3 +74,19 @@ export const resourcesSearchConditions = (query) => {
 	}
 	return conditions;
 };
+// projectsSearchConditions
+export const projectsSearchConditions = (query) => {
+	const conditions = {};
+
+	// Define your search query conditions
+	if (query.description) {
+		conditions.description = new RegExp(query.description, 'i');
+	}
+	if (query.type) {
+		conditions.category = new RegExp(query.category, 'i');
+	}
+	if (query.name) {
+		conditions.title = new RegExp(query.title, 'i');
+	}
+	return conditions;
+};

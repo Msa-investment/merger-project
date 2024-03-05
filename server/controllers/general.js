@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import Transaction from '../models/Transaction.js';
 import Resource from '../models/Resource.js';
+import Project from '../models/Project.js';
 
 export const getUser = async (req, res) => {
 	try {
@@ -22,6 +23,7 @@ export const getDashboardStats = async (req, res) => {
 			.limit(5)
 			.sort({ createdOn: -1 });
 		const totalUsers = await User.countDocuments();
+		const totalProjects = await Project.countDocuments();
 		const totalCustomers = await User.countDocuments({ role: 'USER' });
 		const totalAdmins = await User.countDocuments({ role: 'ADMIN' });
 		const totalResources = await Resource.countDocuments({ role: 'ADMIN' });
@@ -31,6 +33,7 @@ export const getDashboardStats = async (req, res) => {
 			totalCustomers,
 			topCustomers,
 			totalAdmins,
+			totalProjects,
 			totalResources,
 			transactions,
 		});
