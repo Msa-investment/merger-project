@@ -81,11 +81,9 @@ export const getMyActivity = async (req, res) => {
 };
 export const getActivity = async (req, res) => {
 	try {
-		const { id } = req.params;
-		const activity = await Activity.findById(id);
-		const project = await Project.findOne({ _id: activity.project }).populate(
-			'userId'
-		);
+		const { id, activityId } = req.params;
+		const activity = await Activity.findById(activityId);
+		const project = await Project.findOne({ id }).populate('userId');
 		res.status(200).json({ activity, project });
 	} catch (error) {
 		res.status(404).json({ message: error.message });

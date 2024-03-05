@@ -4,8 +4,8 @@ import formatDateString from '../hooks/formatDateString.js';
 const ProjectDetails = ({ data }) => {
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2">
-        <div>
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className=''>
           <div>
             <Link
               to={`/projects/${data?._id}`}
@@ -14,7 +14,7 @@ const ProjectDetails = ({ data }) => {
               <img
                 src={`https://ui-avatars.com/api/?name=${data?.name}`}
                 alt="document"
-                className="object-fit"
+                className="h-80 w-72 object-cover rounded-t-xl"
               />
             </Link>
           </div>
@@ -25,7 +25,7 @@ const ProjectDetails = ({ data }) => {
             </div>
           </div>
         </div>
-        <div>
+        <div className='flex md:justify-center flex-col'>
           <div>
             <h3 className="font-semibold">Project info:</h3>
           </div>

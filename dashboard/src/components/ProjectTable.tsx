@@ -14,7 +14,11 @@ const Card = ({ project }) => {
                 to={`/projects/${data?._id}`}
                 className="size-[250px] mx-auto"
               >
-                <img src={`https://ui-avatars.com/api/?name=${data?.name}`} alt="project" className="object-fit" />
+                <img
+                  src={`https://ui-avatars.com/api/?name=${data?.name}`}
+                  alt="project"
+                  className="h-80 w-72 object-cover rounded-t-xl"
+                />
               </Link>
             </div>
             <div className="my-3">

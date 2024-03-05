@@ -21,7 +21,7 @@ router.get('/', requireAuth, getProjects);
 // get Activity
 router.get('/activity', requireAuth, getMyActivity);
 // get Activity
-router.get('/:id/activity', requireAuth, getActivity);
+router.get('/:id/activity/:activityId', requireAuth, getActivity);
 // add Activity
 router.post('/:id/activity', requireAuth, addActivity);
 // get user Project

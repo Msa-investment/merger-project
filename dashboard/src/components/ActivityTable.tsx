@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import formatDateString from './../hooks/formatDateString';
 interface activityProps {
   data: Array;
 }
@@ -42,11 +43,13 @@ const ActivityTable = ({ data }: activityProps) => {
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
-                    {data?.startDate}
+                    {formatDateString(data?.startDate)}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">{data?.endDate}</p>
+                  <p className="text-black dark:text-white">
+                    {formatDateString(data?.endDate)}
+                  </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">

@@ -97,7 +97,11 @@ const Activity = () => {
   return (
     <>
       <div className="flex justify-between my-2 bg-white rounded p-2 px-2 mb-4">
-        <Breadcrumb parent="Project" link={`/projects/${id}`}  pageName="Activity" />
+        <Breadcrumb
+          parent="Project"
+          link={`/projects/${id}`}
+          pageName="Activity"
+        />
         {haveAccess() && (
           <div className="flex gap-2 text-center">
             <EditTooltip handelEdit={handelEdit} />
@@ -106,15 +110,13 @@ const Activity = () => {
         )}
       </div>
       <ProjectDetails data={data?.project} />
-      <div className="rounded-sm border border-stroke bg-white px-5 py-4 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:py-2">
-        <ActivityTable data={data?.activities} />
-        <Link
-          to={`/projects/${id}/add-activity`}
-          className="capitalize flex items-center gap-2 rounded bg-primary py-2 px-4.5 font-medium text-white hover:bg-opacity-80"
-        >
-          Add activity
-        </Link>
-      </div>
+
+      <Link
+        to={`/projects/${id}/add-activity`}
+        className="capitalize flex items-center gap-2 rounded bg-primary py-2 px-4.5 font-medium text-white hover:bg-opacity-80"
+      >
+        Add activity
+      </Link>
       {isLoading || loading ? <Loader /> : ''}
     </>
   );
