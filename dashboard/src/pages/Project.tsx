@@ -118,7 +118,11 @@ const Project = () => {
             Add activity
           </Link>
         </div>
-        <ActivityTable data={data?.activities} />
+        <ActivityTable
+          projectId={id}
+          data={data?.activities}
+          setLoading={setLoading}
+        />
       </div>
       {isLoading || loading ? <Loader /> : ''}
     </>

@@ -26,7 +26,8 @@ const ActivityDetails = ({ data }) => {
           </div>
           <div>
             <p className="text-sm font-medium">Type: {data?.type}</p>
-            <p className="text-sm font-medium">Type: {data?.status}</p>
+            <p className="text-sm font-medium">Role: {data?.role}</p>
+            <p className="text-sm font-medium">Status: {data?.status}</p>
             <p className="text-sm font-medium">
               Start date: {formatDateString(data?.startDate)}
             </p>

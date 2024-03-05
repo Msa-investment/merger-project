@@ -34,9 +34,8 @@ export const AuthContextProvider = ({ children }) => {
     });
     if (response.status === 200) {
       const accessToken = response.data.token || response.data.accessToken;
-      updateAccessToken(accessToken, response.refreshToken);
+      updateAccessToken(accessToken, response.data.refreshToken);
       const user = await LocalStorage.get('user');
-      console.log(user);
       setUser(user);
     } else {
       // const user = await LocalStorage.get('user');

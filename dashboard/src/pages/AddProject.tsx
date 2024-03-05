@@ -1,46 +1,20 @@
 import Breadcrumb from '../components/Breadcrumb';
 import Loader from '../components/Loader';
-import { useState, useEffect, useContext } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import getError from '../hooks/getError';
-import { fetchProject } from '../hooks/axiosApis';
-import AuthContext from '../context/authContext';
 const apiUrl = import.meta.env.VITE_API_URL;
-import { useQueryClient, useQuery } from '@tanstack/react-query';
-import Swal from 'sweetalert2';
-
+import AuthContext from './../context/authContext';
+import { useQueryClient } from '@tanstack/react-query';
 interface FormData {
   [key: string]: string | Blob;
 }
 
-const AddResource = () => {
+const AddProject = () => {
   const { user } = useContext(AuthContext);
-  const { id } = useParams();
   const [loading, setLoading] = useState(false);
-  const [project, setProject] = useState({});
-  const info = { token: user?.token || user.accessToken, id };
-  const { isLoading, isError, error, data } = useQuery({
-    queryKey: ['projects', id],
-    queryFn: () => fetchProject(info),
-  });
-  useEffect(() => {
-    if (data) {
-      setProject(() => data.project);
-      console.log(data);
-      setName(data?.project?.name);
-      setEndDate(data?.project?.endDate);
-      setStartDate(() => data?.project?.startDate);
-      setDescription(() => data?.project?.description);
-      setType(() => data?.project?.type);
-    }
-    if (error || isError) {
-      const message = getError(error);
-      console.log(message);
-    }
-  }, [data, error, isError]);
-
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
@@ -101,8 +75,8 @@ const AddResource = () => {
       });
   };
   const checkForm = () => {
-    if (!title.trim()) {
-      toast.error('Project title is required!');
+    if (!name.trim()) {
+      toast.error('Project Name is required!');
       return false;
     }
     if (!startDate) {
@@ -117,7 +91,7 @@ const AddResource = () => {
       toast.error('Start date should not be greater than end date!');
       return false;
     }
-    if (!category) {
+    if (!type) {
       toast.error('Project category is required!');
       return false;
     }
@@ -127,70 +101,10 @@ const AddResource = () => {
     }
     return true;
   };
-  const haveAccess = () => {
-    if (
-      user.user.role === 'ADMIN' ||
-      user.user._id.toSttring() === data?.project?.userId.toString()
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-  const handleEdit = () => {
-    if (!checkForm()) {
-      return toast.error('Check form inputs and try again');
-    }
-    Swal.fire({
-      title: 'Are you sure?',
-      text: `These project would be updated!`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, Delete!',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const data: FormData = {
-          name,
-          type,
-          startDate,
-          endDate,
-          description,
-        };
-        setLoading(true);
-        axios
-          .patch(`${apiUrl}/projects/${id}`, data, config)
-          .then((res) => {
-            if (res.data) {
-              console.log(res.data);
-              queryClient.invalidateQueries(['projects', id]);
-              Swal.fire({
-                title: 'Project updated',
-                icon: 'success',
-                text: 'Project updated successfully!',
-              });
-              navigate('/projects');
-            }
-          })
-          .catch((error) => {
-            const message = getError(error);
-            Swal.fire({
-              title: 'Error',
-              icon: 'error',
-              text: message,
-            });
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }
-    });
-  };
 
   return (
     <>
-      <Breadcrumb pageName={!id ? 'Add project' : 'Edit project'} />
+      <Breadcrumb pageName="Add project" />
 
       <div className="flex flex-col">
         <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
@@ -308,25 +222,16 @@ const AddResource = () => {
             </div>
           </div>
         </div>
-        {id ? (
-          <button
-            onClick={handleEdit}
-            className="flex w-full justify-center rounded bg-primary p-3 mt-3 font-medium text-gray"
-          >
-            Edit Project
-          </button>
-        ) : (
-          <button
-            onClick={handleSubmit}
-            className="flex w-full justify-center rounded bg-primary p-3 mt-3 font-medium text-gray"
-          >
-            Add Project
-          </button>
-        )}
+        <button
+          onClick={handleSubmit}
+          className="flex w-full justify-center rounded bg-primary p-3 mt-3 font-medium text-gray"
+        >
+          Add Project
+        </button>
       </div>
-      {loading || isLoading ? <Loader /> : ''}
+      {loading ? <Loader /> : ''}
     </>
   );
 };
 
-export default AddResource;
+export default AddProject;

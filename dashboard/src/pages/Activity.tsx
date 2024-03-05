@@ -51,7 +51,7 @@ const Activity = () => {
     }
   };
   const handelEdit = () => {
-    navigate(`/projects/${id}`);
+    navigate(`/projects/${id}/${activityId}/edit-activity`);
   };
   const handelDelete = () => {
     Swal.fire({
@@ -72,11 +72,11 @@ const Activity = () => {
               console.log(res.data);
               queryClient.invalidateQueries(['projects', id]);
               Swal.fire({
-                title: 'Activity updated',
+                title: 'Activity deleted',
                 icon: 'success',
-                text: 'Activity successfully!',
+                text: 'Activity deleted successfully!',
               });
-              navigate(`/project/${id}`);
+              navigate(`/projects/${id}`);
             }
           })
           .catch((error) => {

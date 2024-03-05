@@ -1,9 +1,9 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState, useContext } from 'react';
+import AuthContext from '../context/authContext';
 import Loader from '../components/Loader';
 import Breadcrumb from '../components/Breadcrumb';
 import getError from '../hooks/getError';
-import AuthContext from '../context/authContext';
 import { fetchResource } from '../hooks/axiosApis';
 import { useParams, useNavigate } from 'react-router-dom';
 import Card from '../components/CardRescource';
@@ -55,7 +55,7 @@ const Resources = () => {
   const handelDelete = () => {
     Swal.fire({
       title: 'Are you sure?',
-      text: `These resourse would be deleted!`,
+      text: `These resource would be deleted!`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -71,9 +71,9 @@ const Resources = () => {
               console.log(res.data);
               queryClient.invalidateQueries(['resources']);
               Swal.fire({
-                title: 'Resource updated',
+                title: 'Resource deleted',
                 icon: 'success',
-                text: 'Resource successfully!',
+                text: 'Resource deleted successfully!',
               });
               navigate('/resources');
             }

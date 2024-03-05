@@ -1,5 +1,6 @@
 import Breadcrumb from '../components/Breadcrumb3';
 import Loader from '../components/Loader';
+import formatDateString from '../hooks/formatDateString';
 import { useState, useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -51,16 +52,26 @@ const EditActivity = () => {
       console.log(message);
     }
   }, [data, error, isError]);
-  const [name, setName] = useState<string>('');
-  const [role, setRole] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
-  const [category, setCategory] = useState<string>('image');
+  const [name, setName] = useState<string>(data?.activity?.name);
+  const [role, setRole] = useState<string>(data?.activity?.role);
+  const [description, setDescription] = useState<string>(
+    data?.activity?.description,
+  );
+  const [startDate, setStartDate] = useState<string>(
+    formatDateString(data?.activity?.startDate),
+  );
+  const [endDate, setEndDate] = useState<string>(
+    formatDateString(data?.activity?.endDate),
+  );
+  const [type, setType] = useState<string>(data?.activity?.type);
+  const [status, setStatus] = useState<string>(data?.activity?.status);
   const handleCategoryChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setCategory(event.target.value);
+    setType(event.target.value);
+  };
+  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setStatus(event.target.value);
   };
   const handleDescriptionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
@@ -80,40 +91,49 @@ const EditActivity = () => {
       Authorization: `Bearer ${user?.token || user.accessToken}`,
     },
   };
+  const statuses = [
+    'SCHEDULED',
+    'START',
+    'ONGOING',
+    'COMPLETED',
+    'INCOMPLETED',
+    'CANCELED',
+  ];
   const handleSubmit = async () => {
     if (!name.trim()) {
-      return toast.error('Project title is required!');
+      return toast.error('Activity name is required!');
     }
     if (!startDate) {
-      return toast.error('Project Start date is required!');
+      return toast.error('Activity Start date is required!');
     }
     if (!endDate) {
-      return toast.error('Project End date is required!');
+      return toast.error('Activity End date is required!');
     }
     if (new Date(startDate) > new Date(endDate)) {
       return toast.error('Start date should not be greater than end date!');
     }
-    if (!category) {
-      return toast.error('Project category is required!');
+    if (!type) {
+      return toast.error('Activity category is required!');
     }
     if (!description) {
-      return toast.error('Project description is required!');
+      return toast.error('Activity description is required!');
     }
     const data: FormData = {
       name,
       project: id,
-      type: category,
+      type,
       role,
+      status,
       startDate,
       endDate,
       description,
     };
     setLoading(true);
     axios
-      .patch(`${apiUrl}/projects/${id}}/activity`, data, config)
+      .patch(`${apiUrl}/projects/${id}}/activity/${activityId}`, data, config)
       .then((res) => {
         if (res.data) {
-          toast.success('Activity added successfully');
+          toast.success('Activity updated successfully');
         }
         queryClient.invalidateQueries(['projects', id]);
         navigate(`/projects/${id}`);
@@ -132,7 +152,7 @@ const EditActivity = () => {
     <>
       <Breadcrumb
         parent="Project"
-        link={`/projects/${id}`}
+        link={`projects/${id}`}
         pageName="Edit Activity"
       />
 
@@ -199,15 +219,52 @@ const EditActivity = () => {
               <div className="flex flex-col gap-5.5 p-6.5">
                 <div className="">
                   <label className="mb-2.5 block text-black dark:text-white">
+                    Status
+                  </label>
+                  <div className="relative z-20 bg-transparent dark:bg-form-input">
+                    <select
+                      value={status}
+                      onChange={handleStatusChange}
+                      className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    >
+                      {statuses.map((item, idx) => (
+                        <option key={idx} value={item}>
+                          {item}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
+                      <svg
+                        className="fill-current"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g opacity="0.8">
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
+                            fill=""
+                          ></path>
+                        </g>
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+                <div className="">
+                  <label className="mb-2.5 block text-black dark:text-white">
                     Category
                   </label>
                   <div className="relative z-20 bg-transparent dark:bg-form-input">
                     <select
-                      value={category}
+                      value=""
                       onChange={handleCategoryChange}
                       className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     >
-                      <option value="">Category</option>
+                      <option value={status}>status</option>
                       <option value="urgent">Urgent</option>
                       <option value="important">Important</option>
                       <option value="critical">Critical</option>

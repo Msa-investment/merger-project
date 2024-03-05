@@ -1,9 +1,84 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import Swal from 'sweetalert2';
+import getError from './../hooks/getError';
 import formatDateString from './../hooks/formatDateString';
+import AuthContext from '../context/authContext';
+import axios from 'axios';
+const apiUrl = import.meta.env.VITE_API_URL;
+import { useQueryClient } from '@tanstack/react-query';
 interface activityProps {
   data: Array;
+  projectId: String;
 }
-const ActivityTable = ({ data }: activityProps) => {
+const ActivityTable = ({ data, projectId, setLoading }: activityProps) => {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const config = {
+    headers: {
+      Authorization: `Bearer ${user?.token || user.accessToken}`,
+    },
+  };
+  const handleStatusChange = async (activityId: String, prevStatus: String) => {
+    const { value: status } = await Swal.fire({
+      title: 'Change Status',
+      input: 'select',
+      inputOptions: {
+        SCHEDULED: 'SCHEDULED',
+        START: 'START',
+        ONGOING: 'ONGOING',
+        COMPLETED: 'COMPLETED',
+        INCOMPLETED: 'INCOMPLETED',
+        CANCELED: 'CANCELED',
+      },
+      inputPlaceholder: `${prevStatus}`,
+      showCancelButton: true,
+      inputValidator: (value) => {
+        return new Promise((resolve) => {
+          if (value === prevStatus) {
+            resolve('You need to change status');
+          } else {
+            resolve();
+          }
+        });
+      },
+      confirmButtonColor: '#3085d6',
+    });
+    if (status) {
+      setLoading(true);
+      const data = { status };
+      axios
+        .patch(
+          `${apiUrl}/projects/${projectId}/activity/${activityId}`,
+          data,
+          config,
+        )
+        .then((res) => {
+          if (res.data) {
+            console.log(res.data);
+            queryClient.invalidateQueries(['projects', projectId]);
+            Swal.fire({
+              title: 'Activity updated',
+              icon: 'success',
+              text: 'Activity  updated successfully!',
+            });
+            navigate(`/projects/${projectId}`);
+          }
+        })
+        .catch((error) => {
+          const message = getError(error);
+          Swal.fire({
+            title: 'Error',
+            icon: 'error',
+            text: message,
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  };
   return (
     <div className="max-w-full overflow-x-auto mt-10">
       <table className="w-full table-auto">
@@ -35,7 +110,7 @@ const ActivityTable = ({ data }: activityProps) => {
               <tr key={data._id}>
                 <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
                   <Link
-                    to={`/projects/${data?._id}/${data?._id}`}
+                    to={`/projects/${projectId}/${data?._id}`}
                     className="font-medium text-black dark:text-white capitalize cursor-pointer"
                   >
                     {data?.name.slice(0, 14)}
@@ -55,14 +130,17 @@ const ActivityTable = ({ data }: activityProps) => {
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">
+                  <button
+                    onClick={() => handleStatusChange(data._id, data.status)}
+                    className="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success cursor-pointer"
+                  >
                     {data.status}
-                  </p>
+                  </button>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
                     <Link
-                      to={`/projects/${data?._id}/${data?._id}`}
+                      to={`/projects/${projectId}/${data?._id}`}
                       className="text-primary hover:text-primary/50"
                       title="details"
                     >

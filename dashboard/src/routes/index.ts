@@ -18,6 +18,7 @@ const Activity = lazy(() => import('../pages/Activity'));
 const MyActivities = lazy(() => import('../pages/MyActivities'));
 const AddActivity = lazy(() => import('../pages/AddActivity'));
 const EditActivity = lazy(() => import('../pages/EditActivity'));
+const EditProject = lazy(() => import('../pages/EditProject'));
 // const FormElements = lazy(() => import('../pages/Form/FormElements'));
 // const Transactions = lazy(() => import('../pages/Transactions'));
 
@@ -75,7 +76,7 @@ const coreRoutes = [
   {
     path: '/projects/:id/edit-project',
     title: 'Project',
-    component: AddProject,
+    component: EditProject,
   },
   {
     path: '/projects/:id/:activityId',
