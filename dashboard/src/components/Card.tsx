@@ -13,14 +13,14 @@ const Card = ({ data }) => {
               alt="fileImage"
               className="h-full object-fit"
             />
-          ) : data?.category === 'document' ? (
-            <img src={document} alt="document" className="h-full object-fit" />
-          ) : (
+          ) : data?.category === 'video' ? (
             <img
               src={thumbnail}
               alt="Video Thumbnail"
               className="h-full object-fit"
             />
+          ) : (
+            <img src={document} alt="document" className="h-full object-fit" />
           )}
         </Link>
       </div>

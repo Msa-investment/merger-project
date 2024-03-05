@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, Suspense } from 'react';
 import DocumentViewer from './DocViewer';
 
 const Card = ({ data }) => {
@@ -22,31 +22,50 @@ const Card = ({ data }) => {
       }
     }
   };
-  console.log(data);
   return (
     <div className="rounded-sm border border-stroke bg-white py-2 px-3 shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="size-[400px]">
-        {data?.category === 'image' ? (
+        {!data ? (
           <img
-            src={data?.file?.url}
-            alt="fileImage"
-            className="h-full object-contain"
+            src={`https://ui-avatars.com/api/?name=${data?.name}`}
+            alt="document"
+            className="h-full object-contain rounded-t-xl"
           />
-        ) : data?.category === 'document' ? (
-          <DocumentViewer src={data?.file?.url} />
         ) : (
           <>
-            <video
-              ref={videoRef}
-              controls
-              width="400"
-              onLoadedMetadata={captureThumbnail} // Capture thumbnail when video metadata is loaded
+            <Suspense
+              fallback={
+                <img
+                  src={`https://ui-avatars.com/api/?name=${data?.name}`}
+                  alt="document"
+                  className="h-full object-contain rounded-t-xl"
+                />
+              }
             >
-              <source src={data?.file?.url} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-            {thumbnail && <img src={thumbnail} alt="Video Thumbnail" />}
-            <canvas ref={canvasRef} style={{ display: 'none' }} />
+              {data?.category === 'image' ? (
+                <img
+                  src={data?.file?.url}
+                  alt="fileImage"
+                  className="h-full object-contain"
+                />
+              ) : data?.category === 'document' ? (
+                <DocumentViewer src={data?.file?.url} />
+              ) : (
+                <>
+                  <video
+                    ref={videoRef}
+                    controls
+                    width="400"
+                    onLoadedMetadata={captureThumbnail} // Capture thumbnail when video metadata is loaded
+                  >
+                    <source src={data?.file?.url} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  {thumbnail && <img src={thumbnail} alt="Video Thumbnail" />}
+                  <canvas ref={canvasRef} style={{ display: 'none' }} />
+                </>
+              )}
+            </Suspense>
           </>
         )}
       </div>
